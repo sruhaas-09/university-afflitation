@@ -35,6 +35,7 @@ exports.sendOTP = async (req, res) => {
 exports.signup = async (req, res) => {
   try {
     const { name, uid, email, password, otp } = req.body;
+    console.log(req.body);
     if (!name || !uid || !email || !password || !otp)
       return res.status(400).json({ error: "All fields required" });
 
