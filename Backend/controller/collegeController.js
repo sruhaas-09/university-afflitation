@@ -114,15 +114,18 @@ exports.collegeLogin = async (req, res) => {
     );
 
     delete tempOTPStore[email];
+    console.log(token);
 
-    res
-      .cookie("collegeToken", token, {
+    res.clearCookie("universityToken");
+
+    res.cookie("collegeToken", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 2 * 60 * 60 * 1000,
       })
       .json({ message: "Login successful" });
+      console.log("cookies",req.cookies.collegeToken);
 
   } catch (err) {
     console.log("College Login Error:", err);

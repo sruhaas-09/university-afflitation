@@ -10,7 +10,6 @@ import {
   Typography,
   Paper
 } from "@mui/material";
-import SchoolIcon from "@mui/icons-material/School";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
@@ -32,9 +31,11 @@ const CollegeDashboard = () => {
   const [applications, setApplications] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
+  // Dialog state
   const [commentDialog, setCommentDialog] = useState(false);
   const [currentComments, setCurrentComments] = useState([]);
 
+  // ========== FETCH DASHBOARD DATA ==========
   const fetchDashboard = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/CollegeDashboard`, {
@@ -42,7 +43,6 @@ const CollegeDashboard = () => {
       });
 
       const data = await res.json();
-      console.log("🎯 DASHBOARD DATA:", data);
 
       setCollegeName(data.collegeName || "");
       setProfileInitials((data.collegeName || "UN").substring(0, 2).toUpperCase());
@@ -65,10 +65,12 @@ const CollegeDashboard = () => {
     fetchDashboard();
   }, [location.key]);
 
+  // ========== TOGGLE PROFILE DROPDOWN ==========
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
+  // ========== OPEN COMMENTS IN DIALOG ==========
   const openCommentDialog = (comments) => {
     setCurrentComments(comments || []);
     setCommentDialog(true);
@@ -77,15 +79,11 @@ const CollegeDashboard = () => {
   return (
     <div>
       <div className="header">
-        <SchoolIcon sx={{ fontSize: 34, color: "#4b58f5" }} />
-        <Typography variant="h4" fontWeight="bold">
-          {collegeName}
-        </Typography>
-
+        <h2>🏫 {collegeName}</h2>
 
         <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
           <div className="nav-buttons">
-            <button className="nav-btn active" onClick={() => navigate("/College-course-Dashboard")}>Dashboard</button>
+            <button className="nav-btn active" onClick={()=>navigate("/College-course-Dashboard")}>Dashboard</button>
 
             <button
               className="nav-btn new-affiliation"

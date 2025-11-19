@@ -7,6 +7,13 @@ body {
   color: #222;
 }
 
+.dashboard-wrapper {
+  background-color: #f7f9fc !important;
+  min-height: 100vh;
+  width: 100%;
+}
+
+
 h3, h4 {
   color: #2c3e50;
   margin: 0;
@@ -177,7 +184,6 @@ h3, h4 {
   background-color: #ffebee;
 }
 
-/* === LAYOUT === */
 .main-container {
   display: flex;
   padding: 30px 40px;
@@ -241,7 +247,6 @@ h3, h4 {
 .card-hold    { background: linear-gradient(135deg, #fff9c4, #fff59d); color: #f9a825; }
 .card-total   { background: linear-gradient(135deg, #bbdefb, #90caf9); color: #1a73e8; }
 
-
 .application-item {
   padding: 18px 22px;
   background: #ffffff;
@@ -273,7 +278,7 @@ h3, h4 {
 }
 
 .modification-btn {
-  background: linear-gradient(135deg, #fcd34d, #fbbf24);
+  background: linear-gradient(135deg, #fcd34d, #fbbf24); 
   color: #333;
   border: none;
   border-radius: 8px;
@@ -295,6 +300,7 @@ h3, h4 {
   transform: scale(0.97);
   box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
 }
+
 
 .notifications-card {
   position: relative;
@@ -372,7 +378,6 @@ h3, h4 {
 .close-btn:hover {
   color: #e53935;
 }
-
 .notification-section::-webkit-scrollbar,
 .notification-list::-webkit-scrollbar {
   width: 6px;
@@ -464,3 +469,4 @@ h3, h4 {
 .popup-container .close-btn:hover {
   color: #ef4444;
 }
+

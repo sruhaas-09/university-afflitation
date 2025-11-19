@@ -107,7 +107,7 @@ export default function UniversityAuth() {
 
       if (res.ok) {
         setMessage("Login Successful! Redirecting...");
-        setTimeout(() => navigate("/College-Dashboard"), 1000);
+        setTimeout(() => navigate("/university-dashboard"), 1000);
       } else {
         setError(data.error || "Invalid credentials.");
       }

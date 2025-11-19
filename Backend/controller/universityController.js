@@ -77,12 +77,14 @@ exports.login = async (req, res) => {
 // );
 
     const token = jwt.sign(
-      { id: university._id },
+      { id: university._id,
+         role: "university"
+       },
       process.env.JWT_SECRET,
       { expiresIn: "2h" }
     );
     console.log(token);
-
+    res.clearCookie("collegeToken");
     res.cookie("universityToken", token, {
       httpOnly: true,
       sameSite: "lax",

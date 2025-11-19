@@ -4,10 +4,12 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   TextField, CircularProgress, Divider,
 } from "@mui/material";
+
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DescriptionIcon from "@mui/icons-material/Description";
 import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+
 import { useNavigate, useParams } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
@@ -31,6 +33,7 @@ export default function ViewApplication() {
         credentials: "include",
       });
       const data = await res.json();
+
       if (data.success) {
         const appData = data.data || data.application;
         setApplication(appData);
@@ -43,10 +46,13 @@ export default function ViewApplication() {
     }
   };
 
-  useEffect(() => { loadData(); }, [applicationCode]);
+  useEffect(() => {
+    loadData();
+  }, [applicationCode]);
 
   const submitStatusChange = async () => {
     if (!remarkText.trim()) return setError("Please enter a remark.");
+
     try {
       const res = await fetch(
         `${API_BASE_URL}/api/university/application/${applicationCode}/status`,
@@ -58,6 +64,7 @@ export default function ViewApplication() {
         }
       );
       const data = await res.json();
+
       if (data.success) {
         await loadData();
         setStatusDialogOpen(false);
@@ -67,127 +74,141 @@ export default function ViewApplication() {
     }
   };
 
-  const downloadApplicationPDF = () => {
-    window.open(`${API_BASE_URL}/api/university/application/${applicationCode}/download`, "_blank");
-  };
-
   const openFile = (fileName) => {
     if (!fileName) return;
     const onlyName = fileName.split(/[/\\]/).pop();
     window.open(`${API_BASE_URL}/uploads/${onlyName}`, "_blank");
   };
 
+  const downloadPDF = () => {
+    window.open(
+      `${API_BASE_URL}/api/university/application/${applicationCode}/download`,
+      "_blank"
+    );
+  };
+
   const statusColor = (status) =>
     status === "Approved" ? "#0E9F6E"
       : status === "Rejected" ? "#DC2626"
-      : status === "Hold" ? "#F59E0B"
-      : "#475569";
+        : status === "Hold" ? "#F59E0B"
+          : "#475569";
 
   if (loading || !application)
     return (
       <Box sx={{ p: 4, textAlign: "center" }}>
         <CircularProgress />
-        <Typography sx={{ mt: 2, color: "#94a3b8" }}>Loading application...</Typography>
+        <Typography sx={{ mt: 2 }}>Loading application...</Typography>
       </Box>
     );
 
   return (
-    <Box sx={styles.page}>
-      <Paper sx={styles.headerCard}>
-        <Button startIcon={<ArrowBackIcon />} sx={styles.backBtn}
-          onClick={() => navigate(`/college/${code}`)}>
-          Back
-        </Button>
+    <Box sx={styles.wrapper}>
+      <Box sx={styles.page}>
 
-        <Typography variant="h6" sx={styles.headerTitle}>
-          {application.programName} — Application
-        </Typography>
+        {/* HEADER CARD */}
+        <Paper sx={styles.headerCard}>
+          <Button startIcon={<ArrowBackIcon />} sx={styles.backBtn}
+            onClick={() => navigate(`/college/${code}`)}>
+            Back
+          </Button>
 
-        <Box sx={styles.statusPill(statusColor(application.status))}>
-          {application.status}
+          <Typography variant="h6" sx={styles.headerTitle}>
+            {application.programName} — Application
+          </Typography>
+
+          <Box sx={styles.statusPill(statusColor(application.status))}>
+            {application.status}
+          </Box>
+        </Paper>
+
+        {/* DOWNLOAD BUTTON */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <Button variant="contained" startIcon={<DownloadIcon />}
+            sx={styles.downloadBtn} onClick={downloadPDF}>
+            Download PDF
+          </Button>
         </Box>
-      </Paper>
 
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button variant="contained" startIcon={<DownloadIcon />} sx={styles.downloadBtn}
-          onClick={downloadApplicationPDF}>
-          Download PDF
-        </Button>
+        {/* SECTIONS */}
+        <Section title="Institution & Submission">
+          {Detail("University Name", application.universityName)}
+          {Detail("University Code", application.universityCode)}
+          {Detail("College Name", application.collegeName)}
+          {Detail("College Code", application.collegeCode)}
+          {Detail("Academic Semester", application.semester)}
+          {Detail("Submission Date", application.submissionDate?.slice(0, 10))}
+        </Section>
+
+        <Section title="Program & Course Summary">
+          {Detail("Program Name", application.programName)}
+          {Detail("Branch", application.branch)}
+          {Detail("Program Code", application.programCode)}
+          {Detail("Level", application.level)}
+          {Detail("Duration", application.duration)}
+          {Detail("Start Date", application.startDate?.slice(0, 10))}
+          {Detail("End Date", application.endDate?.slice(0, 10))}
+          {Detail("Total Semesters", application.totalSemesters)}
+          {Detail("Max Intake", application.maxIntake)}
+          {Detail("Students Registered", application.registered)}
+        </Section>
+
+        <Section title="Uploaded Files & Certificates">
+          <Grid container spacing={2}>
+            {FileItem("Student Excel File", application.studentFile)}
+            {FileItem("Financial Officer Signature", application.financialSignature)}
+            {FileItem("Academic Officer Signature", application.academicSignature)}
+            {FileItem("Principal Signature", application.principalSignature)}
+            {FileItem("Authorization Certificate", application.authorizationCertificate)}
+          </Grid>
+        </Section>
+
+        <Section title="Remarks / Status Updates">
+          {remarks.length ? remarks.map((r, i) => (
+            <Paper key={i} sx={styles.remarkCard}>
+              <Typography fontWeight={600} sx={{ color: statusColor(r.status) }}>
+                {r.status}
+              </Typography>
+
+              <Typography variant="caption" sx={{ color: "#6b7280" }}>
+                {new Date(r.timestamp).toLocaleString()}
+              </Typography>
+
+              <Typography variant="body2" sx={{ mt: 1 }}>{r.text}</Typography>
+            </Paper>
+          )) : (
+            <Typography sx={{ color: "#94a3b8" }}>No remarks available.</Typography>
+          )}
+        </Section>
+
+        {/* ACTION BUTTONS */}
+        <Box sx={styles.bottomBar}>
+          {ActionBtn("Rejected", "#DC2626")}
+          {ActionBtn("Hold", "#F59E0B")}
+          {ActionBtn("Approved", "#0E9F6E")}
+        </Box>
+
+        {/* STATUS DIALOG */}
+        <Dialog open={statusDialogOpen} onClose={() => setStatusDialogOpen(false)} maxWidth="sm" fullWidth>
+          <DialogTitle>Change Status</DialogTitle>
+          <Divider />
+          <DialogContent sx={{ mt: 2 }}>
+            {error && <Typography color="error">{error}</Typography>}
+
+            <TextField label="Remark" fullWidth multiline rows={3}
+              value={remarkText} onChange={(e) => setRemarkText(e.target.value)} />
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={() => setStatusDialogOpen(false)}>Cancel</Button>
+            <Button variant="contained" onClick={submitStatusChange}>Submit</Button>
+          </DialogActions>
+        </Dialog>
+
       </Box>
-
-      <Section title="Institution & Submission">
-        {Detail("University Name", application.universityName)}
-        {Detail("University Code", application.universityCode)}
-        {Detail("College / Institution Name", application.collegeName)}
-        {Detail("College Code / Affiliation No.", application.collegeCode)}
-        {Detail("Academic Semester", application.semester)}
-        {Detail("Submission Date", application.submissionDate?.slice(0, 10))}
-      </Section>
-
-      <Section title="Program & Course Summary">
-        {Detail("Program / Course Name", application.programName)}
-        {Detail("Branch / Specialization", application.branch)}
-        {Detail("Program Code", application.programCode)}
-        {Detail("Level", application.level)}
-        {Detail("Duration (Years)", application.duration)}
-        {Detail("Start Date", application.startDate?.slice(0, 10))}
-        {Detail("End Date", application.endDate?.slice(0, 10))}
-        {Detail("Total Semesters", application.totalSemesters)}
-        {Detail("Max Intake / Seats", application.maxIntake)}
-        {Detail("Students Registered", application.registered)}
-      </Section>
-
-      <Section title="Uploaded Files & Certificates">
-        <Grid container spacing={2}>
-          {FileItem("Student Excel File", application.studentFile)}
-          {FileItem("Financial Officer Signature", application.financialSignature)}
-          {FileItem("Academic Officer Signature", application.academicSignature)}
-          {FileItem("Principal / Director Signature", application.principalSignature)}
-          {FileItem("Authorization Certificate", application.authorizationCertificate)}
-        </Grid>
-      </Section>
-
-      <Section title="Remarks / Status Updates">
-        {remarks.length ? remarks.map((r, i) => (
-          <Paper key={i} sx={styles.remarkCard}>
-            <Typography fontWeight={600} sx={{ color: statusColor(r.status) }}>
-              {r.status}
-            </Typography>
-
-            <Typography variant="caption" sx={{ color: "#6b7280" }}>
-              {new Date(r.timestamp).toLocaleString()}
-            </Typography>
-
-            <Typography variant="body2" sx={{ mt: 1, whiteSpace: "pre-line" }}>
-              {r.text}
-            </Typography>
-          </Paper>
-        )) : (
-          <Typography sx={{ color: "#94a3b8" }}>No remarks available.</Typography>
-        )}
-      </Section>
-
-      <Box sx={styles.bottomBar}>
-        {ActionBtn("Rejected", "#DC2626")}
-        {ActionBtn("Hold", "#F59E0B")}
-        {ActionBtn("Approved", "#0E9F6E")}
-      </Box>
-
-      <Dialog open={statusDialogOpen} onClose={() => setStatusDialogOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>Change Application Status</DialogTitle>
-        <Divider />
-        <DialogContent sx={{ mt: 2 }}>
-          {error && <Typography color="error">{error}</Typography>}
-          <TextField label="Enter remark / reason" fullWidth multiline rows={3}
-            value={remarkText} onChange={(e) => setRemarkText(e.target.value)} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setStatusDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={submitStatusChange}>Submit</Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
+
+  /* COMPONENT HELPERS */
 
   function openStatusDialog(status) {
     setStatusToSet(status);
@@ -199,7 +220,7 @@ export default function ViewApplication() {
   function Section({ title, children }) {
     return (
       <Paper sx={styles.sectionCard}>
-        <Typography variant="subtitle1" sx={styles.sectionTitle}>{title}</Typography>
+        <Typography sx={styles.sectionTitle}>{title}</Typography>
         <Grid container spacing={2}>{children}</Grid>
       </Paper>
     );
@@ -208,7 +229,7 @@ export default function ViewApplication() {
   function Detail(label, value) {
     return (
       <Grid item xs={12}>
-        <Typography variant="body2" sx={styles.detailLabel}>{label}</Typography>
+        <Typography sx={styles.detailLabel}>{label}</Typography>
         <Typography fontWeight={500}>{value || "-"}</Typography>
       </Grid>
     );
@@ -216,7 +237,8 @@ export default function ViewApplication() {
 
   function ActionBtn(label, color) {
     return (
-      <Button variant="contained" sx={{ ...styles.actionBtn, background: color }}
+      <Button variant="contained"
+        sx={{ ...styles.actionBtn, background: color }}
         onClick={() => openStatusDialog(label)}>
         {label}
       </Button>
@@ -224,18 +246,19 @@ export default function ViewApplication() {
   }
 
   function FileItem(label, filePath) {
-    if (!filePath)
+    if (!filePath) {
       return (
         <Grid item xs={12}>
           <Paper sx={styles.fileCardEmpty}>
             <Typography fontWeight={600}>{label}</Typography>
-            <Typography variant="body2" sx={{ color: "#DC2626" }}>Not uploaded</Typography>
+            <Typography sx={{ color: "#DC2626" }}>Not uploaded</Typography>
           </Paper>
         </Grid>
       );
+    }
 
     const fileName = filePath.split(/[/\\]/).pop();
-    const isPreviewType = /\.(png|jpg|jpeg|pdf)$/i.test(fileName);
+    const isPreview = /\.(png|jpg|jpeg|pdf)$/i.test(fileName);
 
     return (
       <Grid item xs={12}>
@@ -249,10 +272,11 @@ export default function ViewApplication() {
           </Box>
 
           <Box sx={styles.fileRight}>
-            {isPreviewType && (
+            {isPreview && (
               <Button size="small" variant="outlined" sx={styles.fileBtnOutline}
                 startIcon={<VisibilityIcon />} onClick={() => openFile(fileName)}>Preview</Button>
             )}
+
             <Button size="small" variant="contained" sx={styles.fileBtn}
               startIcon={<DownloadIcon />} onClick={() => openFile(fileName)}>Download</Button>
           </Box>
@@ -262,60 +286,83 @@ export default function ViewApplication() {
   }
 }
 
+/* STYLES */
 const styles = {
-  page: { p: 3, maxWidth: "1100px", mx: "auto" },
+  wrapper: {
+    width: "100%",
+    minHeight: "100vh",
+    background: "#f5f7fa !important",   // ← FIXED, always visible
+    paddingTop: "30px",
+    paddingBottom: "30px",
+  },
+
+  page: {
+    p: 3,
+    maxWidth: "1100px",
+    mx: "auto",
+    background: "#ffffff",
+    borderRadius: "14px",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+  },
 
   headerCard: {
     p: 2.3,
     mb: 3,
     borderRadius: "18px",
+    background: "#ffffff",
+    boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 2,
-    boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
   },
 
-  headerTitle: { flexGrow: 1, textAlign: "center", fontWeight: 600, color: "#0f172a" },
-  backBtn: { textTransform: "none", fontWeight: 500, color: "#334155" },
+  headerTitle: { flexGrow: 1, textAlign: "center", fontWeight: 600 },
+
+  backBtn: { textTransform: "none", color: "#334155" },
 
   statusPill: (bg) => ({
     padding: "6px 14px",
     borderRadius: "999px",
     fontSize: "13px",
     fontWeight: 600,
-    color: "#fff",
-    backgroundColor: bg,
+    background: bg,
+    color: "white",
   }),
 
-  downloadBtn: { borderRadius: "10px", textTransform: "none" },
+  downloadBtn: {
+    borderRadius: "10px",
+    textTransform: "none",
+  },
 
   sectionCard: {
     p: 3,
     mb: 3,
     borderRadius: "16px",
-    border: "1px solid #e2e8f0",
     background: "#ffffff",
+    border: "1px solid #e2e8f0",
   },
 
   sectionTitle: {
-    mb: 2,
-    color: "#0f172a",
     fontWeight: 600,
-    borderBottom: "1px solid #e2e8f0",
+    mb: 1.5,
     pb: 1,
+    color: "#0f172a",
+    borderBottom: "1px solid #e2e8f0",
   },
 
-  detailLabel: { color: "#64748b", fontSize: "13px" },
+  detailLabel: {
+    fontSize: "13px",
+    color: "#64748b",
+  },
 
   fileCard: {
     p: 2,
     borderRadius: "14px",
+    background: "#f8fafc",
+    border: "1px solid #e2e8f0",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    background: "#f8fafc",
-    border: "1px solid #e2e8f0",
   },
 
   fileCardEmpty: {
@@ -326,7 +373,7 @@ const styles = {
   },
 
   fileLeft: { display: "flex", alignItems: "center", gap: 1.5 },
-  fileRight: { display: "flex", alignItems: "center", gap: 1 },
+  fileRight: { display: "flex", gap: 1 },
 
   remarkCard: {
     p: 2,
@@ -341,16 +388,15 @@ const styles = {
     display: "flex",
     justifyContent: "flex-end",
     gap: 2,
-    paddingTop: 12,
   },
 
   actionBtn: {
-    textTransform: "none",
-    borderRadius: "12px",
-    fontWeight: 600,
     minWidth: "120px",
+    borderRadius: "10px",
+    fontWeight: 600,
+    textTransform: "none",
   },
 
-  fileBtn: { textTransform: "none", borderRadius: "8px" },
-  fileBtnOutline: { textTransform: "none", borderRadius: "8px" },
+  fileBtn: { borderRadius: "8px", textTransform: "none" },
+  fileBtnOutline: { borderRadius: "8px", textTransform: "none" },
 };

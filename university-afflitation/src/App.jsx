@@ -1,5 +1,5 @@
 import React from "react";
-import { CssBaseline, Container, Box } from "@mui/material";
+import { CssBaseline, Box } from "@mui/material";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./components/protected";
@@ -23,102 +23,112 @@ import ViewCollegeApplication from "./pages/viewCollegeApplication";
 function App() {
   return (
     <>
+      <CssBaseline />
+
       <Router>
-        <CssBaseline />
+        <Box
+          sx={{
+            backgroundColor: "#f5f7fa", 
+            minHeight: "100vh",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            padding: 0,
+            margin: 0,
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<CollegeLogin />} />
+            <Route path="/college/Signup" element={<CollegeRegister />} />
+            <Route path="/university-validation" element={<UniversityAuth />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route
+              path="/College-Dashboard"
+              element={
+                <ProtectedRoute allowedRole="college">
+                  <CollegeDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<CollegeLogin />} />
-          <Route path="/college/Signup" element={<CollegeRegister />} />
-          <Route path="/university-validation" element={<UniversityAuth />} />
-          <Route path="/forgotpassword" element={<ForgotPassword />} />
+            <Route
+              path="/College-course-Dashboard"
+              element={
+                <ProtectedRoute allowedRole="college">
+                  <CourseDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/College-Dashboard"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <CollegeDashboard />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/CollegeRestration"
+              element={
+                <ProtectedRoute allowedRole="college">
+                  <BatchRegistrationForm />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/College-course-Dashboard"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <CourseDashboard />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/payments"
+              element={
+                <ProtectedRoute allowedRole="college">
+                  <PaymentsPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/CollegeRestration"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <BatchRegistrationForm />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/college/:code"
+              element={
+                <ProtectedRoute allowedRole="university">
+                  <CollegeDetails />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/payments"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <PaymentsPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/college/:code/application/:applicationCode"
+              element={
+                <ProtectedRoute allowedRole="university">
+                  <ViewApplication />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/college/:code"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <CollegeDetails />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/college/application/:applicationCode"
+              element={
+                <ProtectedRoute allowedRole="college">
+                  <ViewCollegeApplication />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/college/:code/application/:applicationCode"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <ViewApplication />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/university-dashboard"
+              element={
+                <ProtectedRoute allowedRole="university">
+                  <UniversityDashboard />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/college/application/:applicationCode"
-            element={
-              <ProtectedRoute allowedRole="college">
-                <ViewCollegeApplication />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/university/settings"
+              element={
+                <ProtectedRoute allowedRole="university">
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/university-Dashboard"
-            element={
-              <ProtectedRoute allowedRole="university">
-                <UniversityDashboard />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/university/settings"
-            element={
-              <ProtectedRoute allowedRole="university">
-                <Settings />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route path="/not-verified" element={<NotVerified />} />
-          <Route path="*" element={<NotVerified />} />
-        </Routes>
+            <Route path="/not-verified" element={<NotVerified />} />
+            <Route path="*" element={<NotVerified />} />
+          </Routes>
+        </Box>
       </Router>
-
     </>
   );
 }
