@@ -23,112 +23,102 @@ import ViewCollegeApplication from "./pages/viewCollegeApplication";
 function App() {
   return (
     <>
-      <CssBaseline />
       <Router>
-        <Box
-          sx={{
-            backgroundColor: "#fafafa",
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Container maxWidth="xl" disableGutters>
-            <Routes>
+        <CssBaseline />
 
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<CollegeLogin />} />
-              <Route path="/college/Signup" element={<CollegeRegister />} />
-              <Route path="/university-validation" element={<UniversityAuth />} />
-              <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<CollegeLogin />} />
+          <Route path="/college/Signup" element={<CollegeRegister />} />
+          <Route path="/university-validation" element={<UniversityAuth />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
 
-              <Route
-                path="/College-Dashboard"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <CollegeDashboard />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/College-Dashboard"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <CollegeDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/College-course-Dashboard"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <CourseDashboard />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/College-course-Dashboard"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <CourseDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/CollegeRestration"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <BatchRegistrationForm />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/CollegeRestration"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <BatchRegistrationForm />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/payments"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <PaymentsPage />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/payments"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <PaymentsPage />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/college/:code"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <CollegeDetails />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/college/:code"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <CollegeDetails />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/college/:code/application/:applicationCode"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <ViewApplication />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/college/:code/application/:applicationCode"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <ViewApplication />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/college/application/:applicationCode"
-                element={
-                  <ProtectedRoute allowedRole="college">
-                    <ViewCollegeApplication />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/college/application/:applicationCode"
+            element={
+              <ProtectedRoute allowedRole="college">
+                <ViewCollegeApplication />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/university-Dashboard"
-                element={
-                  <ProtectedRoute allowedRole="university">
-                    <UniversityDashboard />
-                  </ProtectedRoute>
-                }
-              />
+          <Route
+            path="/university-Dashboard"
+            element={
+              <ProtectedRoute allowedRole="university">
+                <UniversityDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-              <Route
-                path="/university/settings"
-                element={
-                  <ProtectedRoute allowedRole="university">
-                    <Settings />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/not-verified" element={<NotVerified />} />
-              <Route path="*" element={<NotVerified />} />
+          <Route
+            path="/university/settings"
+            element={
+              <ProtectedRoute allowedRole="university">
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
 
-            </Routes>
-          </Container>
-        </Box>
+          <Route path="/not-verified" element={<NotVerified />} />
+          <Route path="*" element={<NotVerified />} />
+        </Routes>
       </Router>
+
     </>
   );
 }
