@@ -4,8 +4,8 @@ const { sendOTP, signup, login } = require("../controller/universityController")
 
 const university_Auth=require("../middleware/universityAuth")
 
-router.post("/send-otp",university_Auth, sendOTP);
-router.post("/signup",university_Auth, signup);
-router.post("/login",university_Auth, login);
+router.post("/send-otp", sendOTP);
+router.post("/signup",signup);
+router.post("/login", login);
 
 module.exports = router;

@@ -4,8 +4,8 @@ const college_Auth=require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/send-otp",college_Auth, sendCollegeOTP);
-router.post("/signup", college_Auth,collegeSignup);
-router.post("/login",college_Auth, collegeLogin);
+router.post("/send-otp", sendCollegeOTP);
+router.post("/signup",collegeSignup);
+router.post("/login", collegeLogin);
 
 module.exports = router;
