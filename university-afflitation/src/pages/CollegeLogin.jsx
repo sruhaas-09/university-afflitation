@@ -21,7 +21,7 @@ function CollegeLogin() {
     hideProgressBar: true,
   };
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/college";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://university-afflitation-dfiz.onrender.com/api/college";
 
   const handleChange = (value, index) => {
     if (/^[0-9]?$/.test(value)) {

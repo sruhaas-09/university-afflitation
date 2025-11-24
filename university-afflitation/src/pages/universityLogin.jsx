@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 export default function UniversityAuth() {
   const navigate = useNavigate();
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/university";
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://university-afflitation-dfiz.onrender.com/api/university";
 
   const [mode, setMode] = useState("login");
   const [loading, setLoading] = useState(false);
