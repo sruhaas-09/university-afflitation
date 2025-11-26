@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children, allowedRole }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/auth/check", {
+      .get("https://university-afflitation-dfiz.onrender.com/api/auth/check", {
         withCredentials: true,
       })
       .then((res) => {
