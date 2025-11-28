@@ -9,14 +9,19 @@ const jwt=require('jsonwebtoken');
 const app = express();
 
 // Middleware
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: true,
+    origin: [
+      "http://localhost:5173",
+      "https://6929b4deebad0b6821785ef2--incomparable-donut-aca6b1.netlify.app"
+    ],
     credentials: true,
   })
 );
+
 
 // Database connection
 connectDB();
