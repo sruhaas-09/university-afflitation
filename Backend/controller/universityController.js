@@ -87,7 +87,7 @@ exports.login = async (req, res) => {
     res.clearCookie("collegeToken");
     res.cookie("universityToken", token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "None",
       secure: false,
       maxAge: 2 * 60 * 60 * 1000,
     });
