@@ -121,7 +121,7 @@ exports.collegeLogin = async (req, res) => {
     res.cookie("collegeToken", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: "None",
         maxAge: 2 * 60 * 60 * 1000,
       })
       .json({ message: "Login successful" });
